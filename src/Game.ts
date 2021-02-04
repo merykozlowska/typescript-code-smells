@@ -3,6 +3,7 @@ export class Game {
     private _board: Board = new Board();
 
     public Play(symbol: string, x: number, y: number) : void {
+        // ! comments
         //if first move
         if (this._lastSymbol == ' ') {
             //if player is X
@@ -24,8 +25,13 @@ export class Game {
         this._board.AddTileAt(symbol, x, y);
     }
 
+    // ! long method
+    // ! duplication
     public Winner() : string {
         //if the positions in first row are taken
+        // ! Message chain
+        // ! Data clump
+        // ! Feature envy (?)
         if (this._board.TileAt(0, 0)!.Symbol != ' ' &&
                 this._board.TileAt(0, 1)!.Symbol != ' ' &&
                 this._board.TileAt(0, 2)!.Symbol != ' ') {
@@ -67,6 +73,7 @@ export class Game {
     }
 }
 
+// ! Data class (?)
 interface Tile
 {
     X: number;
@@ -94,8 +101,10 @@ class Board
         return this._plays.find((t:Tile) => t.X == x && t.Y == y)!
     }
 
+    // ! Long parameter list (?)
     public AddTileAt(symbol: string, x: number, y: number) : void
     {
+        // !  Dead code
         const tile : Tile = {X :x, Y:y, Symbol:symbol};
 
         this._plays.find((t:Tile) => t.X == x && t.Y == y)!.Symbol = symbol;
