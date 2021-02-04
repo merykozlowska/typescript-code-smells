@@ -1,28 +1,41 @@
 export class Game {
     private _lastSymbol: string = ' ';
     private _board: Board = new Board();
+    private _emptySymbol: string = ' ';
 
-    public Play(symbol: string, x: number, y: number) : void {
+    public Play(tile:Tile) : void {
         // ! comments
         //if first move
-        if (this._lastSymbol == ' ') {
+        if (this._lastSymbol == this._emptySymbol) {
             //if player is X
-            if (symbol == 'O') {
+            if (tile.Symbol == 'O') {
                 throw new Error("Invalid first player");
             }
         }
         //if not first move but player repeated
-        else if (symbol == this._lastSymbol) {
+        else if (tile.Symbol == this._lastSymbol) {
             throw new Error("Invalid next player");
         }
         //if not first move but play on an already played tile
-        else if (this._board.TileAt(x, y).Symbol != ' ') {
+        else if (this._board.SymbolAt(tile.X, tile.Y) != this._emptySymbol) {
             throw new Error("Invalid position");
         }
 
         // update game state
-        this._lastSymbol = symbol;
-        this._board.AddTileAt(symbol, x, y);
+        this._lastSymbol = tile.Symbol;
+        this._board.AddTileAt(tile);
+    }
+
+    private IsRowPlayed(x:number):boolean{
+        return this._board.SymbolAt(x, 0) != this._emptySymbol &&
+            this._board.SymbolAt(x, 1) != this._emptySymbol &&
+            this._board.SymbolAt(x, 2) != this._emptySymbol
+    }
+
+    private AreRowsSame(x:number):boolean{
+        return this._board.SymbolAt(x, 0) ==
+            this._board.SymbolAt(x, 1) &&
+            this._board.SymbolAt(x, 2) == this._board.SymbolAt(x, 1)
     }
 
     // ! long method
@@ -32,49 +45,18 @@ export class Game {
         // ! Message chain
         // ! Data clump
         // ! Feature envy (?)
-        if (this._board.TileAt(0, 0)!.Symbol != ' ' &&
-                this._board.TileAt(0, 1)!.Symbol != ' ' &&
-                this._board.TileAt(0, 2)!.Symbol != ' ') {
-            //if first row is full with same symbol
-            if (this._board.TileAt(0, 0)!.Symbol ==
-                    this._board.TileAt(0, 1)!.Symbol &&
-                    this._board.TileAt(0, 2)!.Symbol == this._board.TileAt(0, 1)!.Symbol) {
-                return this._board.TileAt(0, 0)!.Symbol;
+        for (let i=0; i<3;i++){
+            if (this.IsRowPlayed(i) && this.AreRowsSame(i)) {
+                    return this._board.SymbolAt(i, 0);
             }
         }
-
-        //if the positions in first row are taken
-        if (this._board.TileAt(1, 0)!.Symbol != ' ' &&
-                this._board.TileAt(1, 1)!.Symbol != ' ' &&
-                this._board.TileAt(1, 2)!.Symbol != ' ') {
-            //if middle row is full with same symbol
-            if (this._board.TileAt(1, 0)!.Symbol ==
-                    this._board.TileAt(1, 1)!.Symbol &&
-                    this._board.TileAt(1, 2)!.Symbol ==
-                            this._board.TileAt(1, 1)!.Symbol) {
-                return this._board.TileAt(1, 0)!.Symbol;
-            }
-        }
-
-        //if the positions in first row are taken
-        if (this._board.TileAt(2, 0)!.Symbol != ' ' &&
-                this._board.TileAt(2, 1)!.Symbol != ' ' &&
-                this._board.TileAt(2, 2)!.Symbol != ' ') {
-            //if middle row is full with same symbol
-            if (this._board.TileAt(2, 0)!.Symbol ==
-                    this._board.TileAt(2, 1)!.Symbol &&
-                    this._board.TileAt(2, 2)!.Symbol ==
-                            this._board.TileAt(2, 1)!.Symbol) {
-                return this._board.TileAt(2, 0)!.Symbol;
-            }
-        }
-
         return ' ';
     }
+
 }
 
 // ! Data class (?)
-interface Tile
+export interface Tile
 {
     X: number;
     Y: number;
@@ -97,16 +79,20 @@ class Board
         }
     }
 
-    public TileAt(x:  number, y: number): Tile {
-        return this._plays.find((t:Tile) => t.X == x && t.Y == y)!
+    // public TileAt(x:  number, y: number): Tile {
+    //     return this._plays.find((t:Tile) => t.X == x && t.Y == y)!
+    // }
+
+    public SymbolAt(x:  number, y: number): string {
+        return this._plays.find((t:Tile) => t.X == x && t.Y == y)!.Symbol;
     }
 
     // ! Long parameter list (?)
-    public AddTileAt(symbol: string, x: number, y: number) : void
+    public AddTileAt(tile:Tile) : void
     {
         // !  Dead code
-        const tile : Tile = {X :x, Y:y, Symbol:symbol};
+        //  const tile : Tile = {X :x, Y:y, Symbol:symbol};
 
-        this._plays.find((t:Tile) => t.X == x && t.Y == y)!.Symbol = symbol;
+        this._plays.find((t:Tile) => t.X == tile.X && t.Y == tile.Y)!.Symbol = tile.Symbol;
     }
 }
