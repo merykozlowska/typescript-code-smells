@@ -79,12 +79,12 @@ class Board
         }
     }
 
-    // public TileAt(x:  number, y: number): Tile {
-    //     return this._plays.find((t:Tile) => t.X == x && t.Y == y)!
-    // }
+    public TileAt(x:  number, y: number): Tile {
+        return this._plays.find((t:Tile) => t.X == x && t.Y == y)!
+    }
 
     public SymbolAt(x:  number, y: number): string {
-        return this._plays.find((t:Tile) => t.X == x && t.Y == y)!.Symbol;
+        return this.TileAt(x,y)!.Symbol;
     }
 
     // ! Long parameter list (?)
@@ -93,6 +93,6 @@ class Board
         // !  Dead code
         //  const tile : Tile = {X :x, Y:y, Symbol:symbol};
 
-        this._plays.find((t:Tile) => t.X == tile.X && t.Y == tile.Y)!.Symbol = tile.Symbol;
+        this.TileAt(tile.X,tile.Y)!.Symbol=tile.Symbol;
     }
 }
